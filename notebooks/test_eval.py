@@ -33,7 +33,8 @@ def parse_args():
     parser.add_argument("--weight-dir", default=DEFAULT_WEIGHT_DIR, help="Directory containing official .pt/.pth weights.")
     parser.add_argument("--checkpoint", default=None, help="Explicit checkpoint path. Overrides --weight-dir auto discovery.")
     parser.add_argument("--vjepa-version", choices=("2", "2.1"), default="2.1")
-    parser.add_argument("--num-classes", type=int, default=15)
+    parser.add_argument("--num-classes", type=int, default=None)
+    parser.add_argument("--split-id", type=int, default=1, help="Official UCF101 split id to use when splits/ exists.")
     parser.add_argument("--resolution", type=int, default=384, help="Use 384 for V-JEPA2.1 ViT-L and 256 for V-JEPA2 ViT-L.")
     parser.add_argument("--frames-per-clip", type=int, default=16)
     parser.add_argument("--frame-step", type=int, default=4)
@@ -45,6 +46,7 @@ def parse_args():
     parser.add_argument("--num-workers", type=int, default=4)
     parser.add_argument("--val-ratio", type=float, default=0.2)
     parser.add_argument("--seed", type=int, default=0)
+    parser.add_argument("--output-dir", default="~/autodl-tmp/outputs/vjepa2_ucf101_mlp_probe")
     parser.add_argument("--amp", action="store_true", help="Use CUDA autocast during backbone/probe forward.")
     return parser.parse_args()
 
@@ -66,6 +68,47 @@ def read_csv_samples(csv_path):
                 continue
             samples.append((row[0], int(row[1])))
     return samples
+
+
+def read_ucf101_class_index(path):
+    class_to_idx = {}
+    with open(path, "r") as handle:
+        for line in handle:
+            parts = line.strip().split()
+            if len(parts) != 2:
+                continue
+            class_to_idx[parts[1]] = int(parts[0]) - 1
+    return class_to_idx
+
+
+def read_ucf101_split(split_path, video_root, class_to_idx):
+    samples = []
+    with open(split_path, "r") as handle:
+        for line in handle:
+            parts = line.strip().split()
+            if not parts:
+                continue
+            rel_path = Path(parts[0])
+            label = int(parts[1]) - 1 if len(parts) > 1 else class_to_idx[rel_path.parts[0]]
+            samples.append((str(video_root / rel_path), label))
+    return samples
+
+
+def collect_ucf101_official_split(root, split_id):
+    root = Path(root).expanduser()
+    split_dir = root / "splits"
+    video_root = root / "ucf101-ft"
+    class_file = split_dir / "classInd.txt"
+    train_file = split_dir / f"trainlist{split_id:02d}.txt"
+    test_file = split_dir / f"testlist{split_id:02d}.txt"
+    required = [video_root, class_file, train_file, test_file]
+    if not all(path.exists() for path in required):
+        return None
+
+    class_to_idx = read_ucf101_class_index(class_file)
+    train_samples = read_ucf101_split(train_file, video_root, class_to_idx)
+    val_samples = read_ucf101_split(test_file, video_root, class_to_idx)
+    return train_samples, val_samples, class_to_idx
 
 
 def collect_class_folder_samples(root):
@@ -229,6 +272,13 @@ def make_datasets(args):
     train_transform = make_transforms(training=True, crop_size=args.resolution)
     val_transform = make_transforms(training=False, crop_size=args.resolution)
 
+    official_split = collect_ucf101_official_split(data_path, args.split_id)
+    if official_split is not None:
+        train_samples, val_samples, class_to_idx = official_split
+        train_dataset = UCFVideoDataset(train_samples, train_transform, args.frames_per_clip, args.frame_step, True)
+        val_dataset = UCFVideoDataset(val_samples, val_transform, args.frames_per_clip, args.frame_step, False)
+        return train_dataset, val_dataset, class_to_idx
+
     if data_path.is_file() and data_path.suffix == ".csv":
         all_samples = read_csv_samples(data_path)
         if not all_samples:
@@ -293,6 +343,24 @@ def run_epoch(backbone, probe, loader, criterion, optimizer, device, training, u
     return total_loss / max(1, total_count), 100.0 * total_correct / max(1, total_count)
 
 
+def save_probe_checkpoint(path, probe, optimizer, scheduler, args, class_to_idx, epoch, best_val, val_acc):
+    path = Path(path).expanduser()
+    path.parent.mkdir(parents=True, exist_ok=True)
+    torch.save(
+        {
+            "epoch": epoch,
+            "probe": probe.state_dict(),
+            "optimizer": optimizer.state_dict(),
+            "scheduler": scheduler.state_dict(),
+            "args": vars(args),
+            "class_to_idx": class_to_idx,
+            "best_val": best_val,
+            "val_acc": val_acc,
+        },
+        path,
+    )
+
+
 def main():
     args = parse_args()
     seed_everything(args.seed)
@@ -307,6 +375,11 @@ def main():
     train_dataset, val_dataset, class_to_idx = make_datasets(args)
     if class_to_idx is not None:
         print(f"Classes ({len(class_to_idx)}): {list(class_to_idx.keys())}")
+        if args.num_classes is None:
+            args.num_classes = len(class_to_idx)
+    elif args.num_classes is None:
+        labels = [label for _, label in train_dataset.samples]
+        args.num_classes = max(labels) + 1
     print(f"Train videos: {len(train_dataset)} | Val videos: {len(val_dataset)}")
 
     train_loader = DataLoader(
@@ -338,6 +411,8 @@ def main():
     scheduler = torch.optim.lr_scheduler.CosineAnnealingLR(optimizer, T_max=max(1, args.epochs))
 
     best_val = -math.inf
+    output_dir = Path(args.output_dir).expanduser()
+    output_dir.mkdir(parents=True, exist_ok=True)
     for epoch in range(1, args.epochs + 1):
         train_loss, train_acc = run_epoch(
             backbone, probe, train_loader, criterion, optimizer, device, training=True, use_amp=args.amp
@@ -346,7 +421,13 @@ def main():
             backbone, probe, val_loader, criterion, optimizer, device, training=False, use_amp=args.amp
         )
         scheduler.step()
+        is_best = val_acc > best_val
         best_val = max(best_val, val_acc)
+        save_probe_checkpoint(output_dir / "last.pt", probe, optimizer, scheduler, args, class_to_idx, epoch, best_val, val_acc)
+        if is_best:
+            save_probe_checkpoint(
+                output_dir / "best.pt", probe, optimizer, scheduler, args, class_to_idx, epoch, best_val, val_acc
+            )
         print(
             f"Epoch {epoch:03d}/{args.epochs} | "
             f"train loss {train_loss:.4f} acc {train_acc:.2f}% | "
