@@ -9,6 +9,7 @@ from pathlib import Path
 import numpy as np
 import torch
 import torch.nn as nn
+import wandb
 from decord import VideoReader, cpu
 from torch.utils.data import DataLoader, Dataset, random_split
 
@@ -48,6 +49,9 @@ def parse_args():
     parser.add_argument("--seed", type=int, default=0)
     parser.add_argument("--output-dir", default="~/autodl-tmp/outputs/vjepa2_ucf101_mlp_probe")
     parser.add_argument("--amp", action="store_true", help="Use CUDA autocast during backbone/probe forward.")
+    parser.add_argument("--wandb-project", default="vjepa2-ucf101-mlp-probe")
+    parser.add_argument("--wandb-run-name", default=None)
+    parser.add_argument("--wandb-mode", choices=("online", "offline", "disabled"), default="online")
     return parser.parse_args()
 
 
@@ -310,7 +314,7 @@ def make_datasets(args):
     return train_dataset, val_dataset, class_to_idx
 
 
-def run_epoch(backbone, probe, loader, criterion, optimizer, device, training, use_amp):
+def run_epoch(backbone, probe, loader, criterion, optimizer, device, training, use_amp, global_step=0):
     probe.train(training)
     total_loss = 0.0
     total_correct = 0
@@ -334,13 +338,26 @@ def run_epoch(backbone, probe, loader, criterion, optimizer, device, training, u
         if training:
             loss.backward()
             optimizer.step()
+            current_lr = optimizer.param_groups[0]["lr"]
+            wandb.log(
+                {
+                    "train/global_step": global_step,
+                    "train/step_loss": loss.item(),
+                    "train/lr": current_lr,
+                }
+            )
+            global_step += 1
 
         batch_size = labels.size(0)
         total_loss += loss.item() * batch_size
         total_correct += (logits.argmax(dim=1) == labels).sum().item()
         total_count += batch_size
 
-    return total_loss / max(1, total_count), 100.0 * total_correct / max(1, total_count)
+    avg_loss = total_loss / max(1, total_count)
+    avg_acc = 100.0 * total_correct / max(1, total_count)
+    if training:
+        return avg_loss, avg_acc, global_step
+    return avg_loss, avg_acc
 
 
 def save_probe_checkpoint(path, probe, optimizer, scheduler, args, class_to_idx, epoch, best_val, val_acc):
@@ -409,13 +426,37 @@ def main():
     criterion = nn.CrossEntropyLoss()
     optimizer = torch.optim.AdamW(probe.parameters(), lr=args.lr, weight_decay=args.weight_decay)
     scheduler = torch.optim.lr_scheduler.CosineAnnealingLR(optimizer, T_max=max(1, args.epochs))
+    wandb.init(
+        project=args.wandb_project,
+        name=args.wandb_run_name,
+        mode=args.wandb_mode,
+        config=vars(args),
+    )
+    wandb.define_metric("train/global_step")
+    wandb.define_metric("epoch")
+    wandb.define_metric("train/step_loss", step_metric="train/global_step")
+    wandb.define_metric("train/lr", step_metric="train/global_step")
+    wandb.define_metric("train/epoch_loss", step_metric="epoch")
+    wandb.define_metric("train/epoch_acc", step_metric="epoch")
+    wandb.define_metric("val/loss", step_metric="epoch")
+    wandb.define_metric("val/acc", step_metric="epoch")
+    wandb.define_metric("val/best_acc", step_metric="epoch")
 
     best_val = -math.inf
+    global_step = 0
     output_dir = Path(args.output_dir).expanduser()
     output_dir.mkdir(parents=True, exist_ok=True)
     for epoch in range(1, args.epochs + 1):
-        train_loss, train_acc = run_epoch(
-            backbone, probe, train_loader, criterion, optimizer, device, training=True, use_amp=args.amp
+        train_loss, train_acc, global_step = run_epoch(
+            backbone,
+            probe,
+            train_loader,
+            criterion,
+            optimizer,
+            device,
+            training=True,
+            use_amp=args.amp,
+            global_step=global_step,
         )
         val_loss, val_acc = run_epoch(
             backbone, probe, val_loader, criterion, optimizer, device, training=False, use_amp=args.amp
@@ -428,11 +469,22 @@ def main():
             save_probe_checkpoint(
                 output_dir / "best.pt", probe, optimizer, scheduler, args, class_to_idx, epoch, best_val, val_acc
             )
+        wandb.log(
+            {
+                "epoch": epoch,
+                "train/epoch_loss": train_loss,
+                "train/epoch_acc": train_acc,
+                "val/loss": val_loss,
+                "val/acc": val_acc,
+                "val/best_acc": best_val,
+            }
+        )
         print(
             f"Epoch {epoch:03d}/{args.epochs} | "
             f"train loss {train_loss:.4f} acc {train_acc:.2f}% | "
             f"val loss {val_loss:.4f} acc {val_acc:.2f}% | best {best_val:.2f}%"
         )
+    wandb.finish()
 
 
 if __name__ == "__main__":
