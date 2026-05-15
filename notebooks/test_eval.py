@@ -320,6 +320,9 @@ def run_epoch(backbone, probe, loader, criterion, optimizer, device, training, u
     total_correct = 0
     total_count = 0
 
+    amp_enabled = use_amp and device.type == "cuda"
+    grad_context = torch.enable_grad() if training else torch.no_grad()
+
     for clips, labels in loader:
         clips = clips.to(device, non_blocking=True)
         labels = labels.to(device, non_blocking=True)
@@ -328,12 +331,13 @@ def run_epoch(backbone, probe, loader, criterion, optimizer, device, training, u
             optimizer.zero_grad(set_to_none=True)
 
         with torch.no_grad():
-            with torch.cuda.amp.autocast(enabled=use_amp and device.type == "cuda"):
+            with torch.cuda.amp.autocast('cuda', enabled=amp_enabled):
                 tokens = backbone(clips)
 
-        with torch.cuda.amp.autocast(enabled=use_amp and device.type == "cuda"):
-            logits = probe(tokens)
-            loss = criterion(logits, labels)
+        with grad_context:
+            with torch.cuda.amp.autocast('cuda', enabled=amp_enabled):
+                logits = probe(tokens)
+                loss = criterion(logits, labels)
 
         if training:
             loss.backward()
