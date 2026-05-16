@@ -1,0 +1,15 @@
+/root/autodl-tmp/Info-JEPA-fork/notebooks/test_eval.py:348: FutureWarning: `torch.cuda.amp.autocast(args...)` is deprecated. Please use `torch.amp.autocast('cuda', args...)` instead.
+  with torch.cuda.amp.autocast('cuda', enabled=amp_enabled):
+Traceback (most recent call last):
+  File "/root/autodl-tmp/Info-JEPA-fork/notebooks/test_eval.py", line 509, in <module>
+    main()
+  File "/root/autodl-tmp/Info-JEPA-fork/notebooks/test_eval.py", line 468, in main
+    train_loss, train_acc, global_step = run_epoch(
+                                         ^^^^^^^^^^
+  File "/root/autodl-tmp/Info-JEPA-fork/notebooks/test_eval.py", line 348, in run_epoch
+    with torch.cuda.amp.autocast('cuda', enabled=amp_enabled):
+         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/root/miniconda3/envs/Info-JEPA-Train/lib/python3.12/site-packages/typing_extensions.py", line 2962, in __new__
+    return original_new(cls, *args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+TypeError: autocast.__new__() got multiple values for argument 'enabled'

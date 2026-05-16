@@ -1,0 +1,79 @@
+{"time":"2026-05-15T21:10:26.146444387+08:00","level":"INFO","msg":"wandb-core"}
+{"time":"2026-05-15T21:10:26.146933205+08:00","level":"INFO","msg":"stream: starting","core version":"0.26.1"}
+{"time":"2026-05-15T21:10:27.161913288+08:00","level":"INFO","msg":"stream: created new stream","id":"xja7fs29"}
+{"time":"2026-05-15T21:10:27.162003581+08:00","level":"INFO","msg":"handler: started"}
+{"time":"2026-05-15T21:10:27.162058587+08:00","level":"INFO","msg":"stream: started"}
+{"time":"2026-05-15T21:10:27.162105943+08:00","level":"INFO","msg":"sender: started"}
+{"time":"2026-05-15T21:10:27.162099166+08:00","level":"INFO","msg":"writer: started","stream_id":"xja7fs29"}
+{"time":"2026-05-15T21:10:34.496694861+08:00","level":"INFO","msg":"filestream: sending request","total_files":0,"uploaded_len":1}
+{"time":"2026-05-15T21:10:35.443983705+08:00","level":"INFO","msg":"filestream: request sent","status":"200 OK"}
+{"time":"2026-05-15T21:10:49.496678102+08:00","level":"INFO","msg":"filestream: sending request","total_files":1,"events_offset":0,"events_lines":2,"uploaded_len":1}
+{"time":"2026-05-15T21:10:50.058031248+08:00","level":"INFO","msg":"filestream: request sent","status":"200 OK"}
+{"time":"2026-05-15T21:11:04.497567434+08:00","level":"INFO","msg":"filestream: sending request","total_files":1,"events_offset":2,"events_lines":2}
+{"time":"2026-05-15T21:11:04.499735414+08:00","level":"INFO","msg":"api: retrying error","error":"Post \"https://api.wandb.ai/files/xinchen-qian-ai-beihang-university/vjepa2-ucf101-mlp-probe/xja7fs29/file_stream\": EOF"}
+{"time":"2026-05-15T21:11:07.598805477+08:00","level":"INFO","msg":"filestream: request sent","status":"200 OK"}
+{"time":"2026-05-15T21:11:19.496740212+08:00","level":"INFO","msg":"filestream: sending request","total_files":2,"events_offset":4,"events_lines":2,"console_offset":0,"console_lines":4}
+{"time":"2026-05-15T21:11:19.936490712+08:00","level":"INFO","msg":"filestream: request sent","status":"200 OK"}
+{"time":"2026-05-15T21:11:34.496640882+08:00","level":"INFO","msg":"filestream: sending request","total_files":2,"events_offset":6,"events_lines":2,"console_offset":4,"console_lines":2}
+{"time":"2026-05-15T21:11:35.106431672+08:00","level":"INFO","msg":"filestream: request sent","status":"200 OK"}
+{"time":"2026-05-15T21:11:49.497484179+08:00","level":"INFO","msg":"filestream: sending request","total_files":3,"history_offset":0,"history_lines":2,"events_offset":8,"events_lines":2}
+{"time":"2026-05-15T21:11:54.071216388+08:00","level":"INFO","msg":"filestream: request sent","status":"200 OK"}
+{"time":"2026-05-15T21:12:04.49760595+08:00","level":"INFO","msg":"filestream: sending request","total_files":3,"history_offset":2,"history_lines":1,"events_offset":10,"events_lines":2}
+{"time":"2026-05-15T21:12:05.656910069+08:00","level":"INFO","msg":"filestream: request sent","status":"200 OK"}
+{"time":"2026-05-15T21:12:19.49684206+08:00","level":"INFO","msg":"filestream: sending request","total_files":3,"history_offset":3,"history_lines":1,"events_offset":12,"events_lines":2}
+{"time":"2026-05-15T21:12:20.289999204+08:00","level":"INFO","msg":"filestream: request sent","status":"200 OK"}
+{"time":"2026-05-15T21:12:34.496587158+08:00","level":"INFO","msg":"filestream: sending request","total_files":3,"history_offset":4,"history_lines":1,"events_offset":14,"events_lines":2}
+{"time":"2026-05-15T21:12:35.274769382+08:00","level":"INFO","msg":"filestream: request sent","status":"200 OK"}
+{"time":"2026-05-15T21:12:49.49747312+08:00","level":"INFO","msg":"filestream: sending request","total_files":3,"history_offset":5,"history_lines":1,"events_offset":16,"events_lines":2}
+{"time":"2026-05-15T21:12:49.500827639+08:00","level":"INFO","msg":"api: retrying HTTP error","status":502,"url":"https://api.wandb.ai/files/xinchen-qian-ai-beihang-university/vjepa2-ucf101-mlp-probe/xja7fs29/file_stream","body":"<!DOCTYPE html PUBLIC \"-//W3C//DTD HTML 4.01//EN\" \"http://www.w3.org/TR/html4/strict.dtd\">\n<html><head>\n<meta type=\"copyright\" content=\"Copyright (C) 1996-2020 The Squid Software Foundation and contributors\">\n<meta http-equiv=\"Content-Type\" content=\"text/html; charset=utf-8\">\n<title>ERROR: The requested URL could not be retrieved</title>\n<style type=\"text/css\"><!-- \n /*\n * Copyright (C) 1996-2021 The Squid Software Foundation and contributors\n *\n * Squid software is distributed under GPLv2+ license and includes\n * contributions from numerous individuals and organizations.\n * Please see the COPYING and CONTRIBUTORS files for details.\n */\n\n/*\n Stylesheet for Squid Error pages\n Adapted from design by Free CSS Templates\n http://www.freecsstemplates.org\n Released for free under a Creative Commons Attribution 2.5 License\n*/\n\n/* Page basics */\n* {\n\tfont-family: verdana, sans-serif;\n}\n\nhtml body {\n\tmargin: 0;\n\tpadding: 0;\n\tbackground: #efefef;\n\tfont-size: 12px;\n\tcolor: #1e1e1e;\n}\n\n/* Page displayed title area */\n#tit"}
+{"time":"2026-05-15T21:12:54.458954621+08:00","level":"INFO","msg":"filestream: request sent","status":"200 OK"}
+{"time":"2026-05-15T21:13:04.496686423+08:00","level":"INFO","msg":"filestream: sending request","total_files":3,"history_offset":6,"history_lines":1,"events_offset":18,"events_lines":2}
+{"time":"2026-05-15T21:13:05.879749988+08:00","level":"INFO","msg":"filestream: request sent","status":"200 OK"}
+{"time":"2026-05-15T21:13:19.496827528+08:00","level":"INFO","msg":"filestream: sending request","total_files":3,"history_offset":7,"history_lines":1,"events_offset":20,"events_lines":2}
+{"time":"2026-05-15T21:13:19.995419457+08:00","level":"INFO","msg":"filestream: request sent","status":"200 OK"}
+{"time":"2026-05-15T21:13:34.496592252+08:00","level":"INFO","msg":"filestream: sending request","total_files":3,"history_offset":8,"history_lines":1,"events_offset":22,"events_lines":2}
+{"time":"2026-05-15T21:13:44.625010217+08:00","level":"INFO","msg":"filestream: request sent","status":"200 OK"}
+{"time":"2026-05-15T21:13:49.497179807+08:00","level":"INFO","msg":"filestream: sending request","total_files":3,"history_offset":9,"history_lines":2,"events_offset":24,"events_lines":2}
+{"time":"2026-05-15T21:13:50.633933313+08:00","level":"INFO","msg":"filestream: request sent","status":"200 OK"}
+{"time":"2026-05-15T21:14:04.496962188+08:00","level":"INFO","msg":"filestream: sending request","total_files":3,"history_offset":11,"history_lines":1,"events_offset":26,"events_lines":2}
+{"time":"2026-05-15T21:14:14.128182919+08:00","level":"INFO","msg":"filestream: request sent","status":"200 OK"}
+{"time":"2026-05-15T21:14:19.497497809+08:00","level":"INFO","msg":"filestream: sending request","total_files":3,"history_offset":12,"history_lines":1,"events_offset":28,"events_lines":2}
+{"time":"2026-05-15T21:14:20.151477259+08:00","level":"INFO","msg":"filestream: request sent","status":"200 OK"}
+{"time":"2026-05-15T21:14:34.49757548+08:00","level":"INFO","msg":"filestream: sending request","total_files":3,"history_offset":13,"history_lines":1,"events_offset":30,"events_lines":2}
+{"time":"2026-05-15T21:14:36.166898957+08:00","level":"INFO","msg":"filestream: request sent","status":"200 OK"}
+{"time":"2026-05-15T21:14:49.49721128+08:00","level":"INFO","msg":"filestream: sending request","total_files":3,"history_offset":14,"history_lines":1,"events_offset":32,"events_lines":2}
+{"time":"2026-05-15T21:14:50.062725676+08:00","level":"INFO","msg":"filestream: request sent","status":"200 OK"}
+{"time":"2026-05-15T21:15:04.496786669+08:00","level":"INFO","msg":"filestream: sending request","total_files":3,"history_offset":15,"history_lines":1,"events_offset":34,"events_lines":2}
+{"time":"2026-05-15T21:15:05.024947604+08:00","level":"INFO","msg":"filestream: request sent","status":"200 OK"}
+{"time":"2026-05-15T21:15:19.497012683+08:00","level":"INFO","msg":"filestream: sending request","total_files":3,"history_offset":16,"history_lines":1,"events_offset":36,"events_lines":2}
+{"time":"2026-05-15T21:15:20.120852207+08:00","level":"INFO","msg":"filestream: request sent","status":"200 OK"}
+{"time":"2026-05-15T21:15:34.497251688+08:00","level":"INFO","msg":"filestream: sending request","total_files":3,"history_offset":17,"history_lines":1,"events_offset":38,"events_lines":2}
+{"time":"2026-05-15T21:15:34.534163689+08:00","level":"INFO","msg":"api: retrying error","error":"Post \"https://api.wandb.ai/files/xinchen-qian-ai-beihang-university/vjepa2-ucf101-mlp-probe/xja7fs29/file_stream\": EOF"}
+{"time":"2026-05-15T21:15:41.978197754+08:00","level":"INFO","msg":"filestream: request sent","status":"200 OK"}
+{"time":"2026-05-15T21:15:49.497372177+08:00","level":"INFO","msg":"filestream: sending request","total_files":3,"history_offset":18,"history_lines":1,"events_offset":40,"events_lines":2}
+{"time":"2026-05-15T21:15:50.049085019+08:00","level":"INFO","msg":"filestream: request sent","status":"200 OK"}
+{"time":"2026-05-15T21:16:04.496863977+08:00","level":"INFO","msg":"filestream: sending request","total_files":3,"history_offset":19,"history_lines":1,"events_offset":42,"events_lines":2}
+{"time":"2026-05-15T21:16:05.022505859+08:00","level":"INFO","msg":"filestream: request sent","status":"200 OK"}
+{"time":"2026-05-15T21:16:19.497681026+08:00","level":"INFO","msg":"filestream: sending request","total_files":3,"history_offset":20,"history_lines":2,"events_offset":44,"events_lines":2}
+{"time":"2026-05-15T21:16:29.53437324+08:00","level":"INFO","msg":"filestream: request sent","status":"200 OK"}
+{"time":"2026-05-15T21:16:34.496936284+08:00","level":"INFO","msg":"filestream: sending request","total_files":3,"history_offset":22,"history_lines":1,"events_offset":46,"events_lines":2}
+{"time":"2026-05-15T21:16:34.956584361+08:00","level":"INFO","msg":"filestream: request sent","status":"200 OK"}
+{"time":"2026-05-15T21:16:49.497216943+08:00","level":"INFO","msg":"filestream: sending request","total_files":3,"history_offset":23,"history_lines":1,"events_offset":48,"events_lines":2}
+{"time":"2026-05-15T21:16:50.446579913+08:00","level":"INFO","msg":"filestream: request sent","status":"200 OK"}
+{"time":"2026-05-15T21:17:04.497603953+08:00","level":"INFO","msg":"filestream: sending request","total_files":3,"history_offset":24,"history_lines":1,"events_offset":50,"events_lines":2}
+{"time":"2026-05-15T21:17:04.942971553+08:00","level":"INFO","msg":"filestream: request sent","status":"200 OK"}
+{"time":"2026-05-15T21:17:19.497163574+08:00","level":"INFO","msg":"filestream: sending request","total_files":3,"history_offset":25,"history_lines":1,"events_offset":52,"events_lines":2}
+{"time":"2026-05-15T21:17:19.966426428+08:00","level":"INFO","msg":"filestream: request sent","status":"200 OK"}
+{"time":"2026-05-15T21:17:34.497105599+08:00","level":"INFO","msg":"filestream: sending request","total_files":3,"history_offset":26,"history_lines":1,"events_offset":54,"events_lines":2}
+{"time":"2026-05-15T21:17:34.931651167+08:00","level":"INFO","msg":"filestream: request sent","status":"200 OK"}
+{"time":"2026-05-15T21:17:49.4970904+08:00","level":"INFO","msg":"filestream: sending request","total_files":3,"history_offset":27,"history_lines":2,"events_offset":56,"events_lines":2}
+{"time":"2026-05-15T21:17:49.503175673+08:00","level":"INFO","msg":"api: retrying error","error":"Post \"https://api.wandb.ai/files/xinchen-qian-ai-beihang-university/vjepa2-ucf101-mlp-probe/xja7fs29/file_stream\": EOF"}
+{"time":"2026-05-15T21:17:53.753265609+08:00","level":"INFO","msg":"filestream: request sent","status":"200 OK"}
+{"time":"2026-05-15T21:18:04.497340114+08:00","level":"INFO","msg":"filestream: sending request","total_files":3,"history_offset":29,"history_lines":1,"events_offset":58,"events_lines":2}
+{"time":"2026-05-15T21:18:04.925455247+08:00","level":"INFO","msg":"filestream: request sent","status":"200 OK"}
+{"time":"2026-05-15T21:18:19.497005979+08:00","level":"INFO","msg":"filestream: sending request","total_files":3,"history_offset":30,"history_lines":1,"events_offset":60,"events_lines":2}
+{"time":"2026-05-15T21:18:19.920770798+08:00","level":"INFO","msg":"filestream: request sent","status":"200 OK"}
+{"time":"2026-05-15T21:18:34.49769359+08:00","level":"INFO","msg":"filestream: sending request","total_files":3,"history_offset":31,"history_lines":1,"events_offset":62,"events_lines":2}
+{"time":"2026-05-15T21:18:42.932870251+08:00","level":"INFO","msg":"filestream: request sent","status":"200 OK"}
+{"time":"2026-05-15T21:18:49.496926625+08:00","level":"INFO","msg":"filestream: sending request","total_files":1,"events_offset":64,"events_lines":2}
+{"time":"2026-05-15T21:18:49.983122604+08:00","level":"INFO","msg":"filestream: request sent","status":"200 OK"}

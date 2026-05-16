@@ -1,0 +1,64 @@
+Traceback (most recent call last):
+  File "/root/autodl-tmp/Info-JEPA-fork/notebooks/test_eval.py", line 510, in <module>
+    main()
+  File "/root/autodl-tmp/Info-JEPA-fork/notebooks/test_eval.py", line 469, in main
+    train_loss, train_acc, global_step = run_epoch(
+  File "/root/autodl-tmp/Info-JEPA-fork/notebooks/test_eval.py", line 343, in run_epoch
+    tokens = backbone(clips)
+  File "/root/miniconda3/lib/python3.10/site-packages/torch/nn/modules/module.py", line 1518, in _wrapped_call_impl
+    return self._call_impl(*args, **kwargs)
+  File "/root/miniconda3/lib/python3.10/site-packages/torch/nn/modules/module.py", line 1527, in _call_impl
+    return forward_call(*args, **kwargs)
+  File "/root/autodl-tmp/Info-JEPA-fork/app/vjepa_2_1/models/vision_transformer.py", line 313, in forward
+    x, attn = blk(
+  File "/root/miniconda3/lib/python3.10/site-packages/torch/nn/modules/module.py", line 1518, in _wrapped_call_impl
+    return self._call_impl(*args, **kwargs)
+  File "/root/miniconda3/lib/python3.10/site-packages/torch/nn/modules/module.py", line 1527, in _call_impl
+    return forward_call(*args, **kwargs)
+  File "/root/autodl-tmp/Info-JEPA-fork/app/vjepa_2_1/models/utils/modules.py", line 452, in forward
+    x = x + self.drop_path(self.mlp(self.norm2(x)))
+  File "/root/miniconda3/lib/python3.10/site-packages/torch/nn/modules/module.py", line 1518, in _wrapped_call_impl
+    return self._call_impl(*args, **kwargs)
+  File "/root/miniconda3/lib/python3.10/site-packages/torch/nn/modules/module.py", line 1527, in _call_impl
+    return forward_call(*args, **kwargs)
+  File "/root/autodl-tmp/Info-JEPA-fork/app/vjepa_2_1/models/utils/modules.py", line 89, in forward
+    x = self.fc1(x)
+  File "/root/miniconda3/lib/python3.10/site-packages/torch/nn/modules/module.py", line 1518, in _wrapped_call_impl
+    return self._call_impl(*args, **kwargs)
+  File "/root/miniconda3/lib/python3.10/site-packages/torch/nn/modules/module.py", line 1527, in _call_impl
+    return forward_call(*args, **kwargs)
+  File "/root/miniconda3/lib/python3.10/site-packages/torch/nn/modules/linear.py", line 114, in forward
+    return F.linear(input, self.weight, self.bias)
+KeyboardInterrupt
+Traceback (most recent call last):
+  File "/root/autodl-tmp/Info-JEPA-fork/notebooks/test_eval.py", line 510, in <module>
+    main()
+  File "/root/autodl-tmp/Info-JEPA-fork/notebooks/test_eval.py", line 469, in main
+    train_loss, train_acc, global_step = run_epoch(
+  File "/root/autodl-tmp/Info-JEPA-fork/notebooks/test_eval.py", line 343, in run_epoch
+    tokens = backbone(clips)
+  File "/root/miniconda3/lib/python3.10/site-packages/torch/nn/modules/module.py", line 1518, in _wrapped_call_impl
+    return self._call_impl(*args, **kwargs)
+  File "/root/miniconda3/lib/python3.10/site-packages/torch/nn/modules/module.py", line 1527, in _call_impl
+    return forward_call(*args, **kwargs)
+  File "/root/autodl-tmp/Info-JEPA-fork/app/vjepa_2_1/models/vision_transformer.py", line 313, in forward
+    x, attn = blk(
+  File "/root/miniconda3/lib/python3.10/site-packages/torch/nn/modules/module.py", line 1518, in _wrapped_call_impl
+    return self._call_impl(*args, **kwargs)
+  File "/root/miniconda3/lib/python3.10/site-packages/torch/nn/modules/module.py", line 1527, in _call_impl
+    return forward_call(*args, **kwargs)
+  File "/root/autodl-tmp/Info-JEPA-fork/app/vjepa_2_1/models/utils/modules.py", line 452, in forward
+    x = x + self.drop_path(self.mlp(self.norm2(x)))
+  File "/root/miniconda3/lib/python3.10/site-packages/torch/nn/modules/module.py", line 1518, in _wrapped_call_impl
+    return self._call_impl(*args, **kwargs)
+  File "/root/miniconda3/lib/python3.10/site-packages/torch/nn/modules/module.py", line 1527, in _call_impl
+    return forward_call(*args, **kwargs)
+  File "/root/autodl-tmp/Info-JEPA-fork/app/vjepa_2_1/models/utils/modules.py", line 89, in forward
+    x = self.fc1(x)
+  File "/root/miniconda3/lib/python3.10/site-packages/torch/nn/modules/module.py", line 1518, in _wrapped_call_impl
+    return self._call_impl(*args, **kwargs)
+  File "/root/miniconda3/lib/python3.10/site-packages/torch/nn/modules/module.py", line 1527, in _call_impl
+    return forward_call(*args, **kwargs)
+  File "/root/miniconda3/lib/python3.10/site-packages/torch/nn/modules/linear.py", line 114, in forward
+    return F.linear(input, self.weight, self.bias)
+KeyboardInterrupt

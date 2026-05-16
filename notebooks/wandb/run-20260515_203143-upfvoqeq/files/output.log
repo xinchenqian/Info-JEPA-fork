@@ -1,0 +1,33 @@
+/root/autodl-tmp/Info-JEPA-fork/notebooks/test_eval.py:341: FutureWarning: `torch.cuda.amp.autocast(args...)` is deprecated. Please use `torch.amp.autocast('cuda', args...)` instead.
+  with torch.cuda.amp.autocast(enabled=amp_enabled and device.type == "cuda"):
+/root/miniconda3/envs/Info-JEPA-Train/lib/python3.12/contextlib.py:105: FutureWarning: `torch.backends.cuda.sdp_kernel()` is deprecated. In the future, this context manager will be removed. Please see `torch.nn.attention.sdpa_kernel()` for the new context manager, with updated signature.
+  self.gen = func(*args, **kwds)
+/root/autodl-tmp/Info-JEPA-fork/notebooks/test_eval.py:345: FutureWarning: `torch.cuda.amp.autocast(args...)` is deprecated. Please use `torch.amp.autocast('cuda', args...)` instead.
+  with torch.cuda.amp.autocast(enabled=amp_enabled and device.type == "cuda"):
+Traceback (most recent call last):
+  File "/root/autodl-tmp/Info-JEPA-fork/notebooks/test_eval.py", line 502, in <module>
+    main()
+  File "/root/autodl-tmp/Info-JEPA-fork/notebooks/test_eval.py", line 472, in main
+    val_loss, val_acc = run_epoch(
+                        ^^^^^^^^^^
+  File "/root/autodl-tmp/Info-JEPA-fork/notebooks/test_eval.py", line 333, in run_epoch
+    for clips, labels in loader:
+                         ^^^^^^
+  File "/root/miniconda3/envs/Info-JEPA-Train/lib/python3.12/site-packages/torch/utils/data/dataloader.py", line 741, in __next__
+    data = self._next_data()
+           ^^^^^^^^^^^^^^^^^
+  File "/root/miniconda3/envs/Info-JEPA-Train/lib/python3.12/site-packages/torch/utils/data/dataloader.py", line 1524, in _next_data
+    idx, data = self._get_data()
+                ^^^^^^^^^^^^^^^^
+  File "/root/miniconda3/envs/Info-JEPA-Train/lib/python3.12/site-packages/torch/utils/data/dataloader.py", line 1473, in _get_data
+    success, data = self._try_get_data()
+                    ^^^^^^^^^^^^^^^^^^^^
+  File "/root/miniconda3/envs/Info-JEPA-Train/lib/python3.12/site-packages/torch/utils/data/dataloader.py", line 1310, in _try_get_data
+    data = self._data_queue.get(timeout=timeout)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/root/miniconda3/envs/Info-JEPA-Train/lib/python3.12/queue.py", line 180, in get
+    self.not_empty.wait(remaining)
+  File "/root/miniconda3/envs/Info-JEPA-Train/lib/python3.12/threading.py", line 359, in wait
+    gotit = waiter.acquire(True, timeout)
+            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+KeyboardInterrupt

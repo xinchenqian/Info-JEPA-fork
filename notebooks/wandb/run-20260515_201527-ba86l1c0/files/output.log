@@ -1,0 +1,46 @@
+/root/autodl-tmp/Info-JEPA-fork/notebooks/test_eval.py:348: FutureWarning: `torch.cuda.amp.autocast(args...)` is deprecated. Please use `torch.amp.autocast('cuda', args...)` instead.
+  with torch.cuda.amp.autocast(enabled=amp_enabled and device.type == "cuda"):
+/root/miniconda3/envs/Info-JEPA-Train/lib/python3.12/contextlib.py:105: FutureWarning: `torch.backends.cuda.sdp_kernel()` is deprecated. In the future, this context manager will be removed. Please see `torch.nn.attention.sdpa_kernel()` for the new context manager, with updated signature.
+  self.gen = func(*args, **kwds)
+/root/autodl-tmp/Info-JEPA-fork/notebooks/test_eval.py:352: FutureWarning: `torch.cuda.amp.autocast(args...)` is deprecated. Please use `torch.amp.autocast('cuda', args...)` instead.
+  with torch.cuda.amp.autocast(enabled=amp_enabled and device.type == "cuda"):
+Traceback (most recent call last):
+  File "/root/autodl-tmp/Info-JEPA-fork/notebooks/test_eval.py", line 509, in <module>
+    main()
+  File "/root/autodl-tmp/Info-JEPA-fork/notebooks/test_eval.py", line 479, in main
+    val_loss, val_acc = run_epoch(
+                        ^^^^^^^^^^
+  File "/root/autodl-tmp/Info-JEPA-fork/notebooks/test_eval.py", line 349, in run_epoch
+    tokens = backbone(clips)
+             ^^^^^^^^^^^^^^^
+  File "/root/miniconda3/envs/Info-JEPA-Train/lib/python3.12/site-packages/torch/nn/modules/module.py", line 1779, in _wrapped_call_impl
+    return self._call_impl(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/root/miniconda3/envs/Info-JEPA-Train/lib/python3.12/site-packages/torch/nn/modules/module.py", line 1790, in _call_impl
+    return forward_call(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/root/autodl-tmp/Info-JEPA-fork/app/vjepa_2_1/models/vision_transformer.py", line 313, in forward
+    x, attn = blk(
+              ^^^^
+  File "/root/miniconda3/envs/Info-JEPA-Train/lib/python3.12/site-packages/torch/nn/modules/module.py", line 1779, in _wrapped_call_impl
+    return self._call_impl(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/root/miniconda3/envs/Info-JEPA-Train/lib/python3.12/site-packages/torch/nn/modules/module.py", line 1790, in _call_impl
+    return forward_call(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/root/autodl-tmp/Info-JEPA-fork/app/vjepa_2_1/models/utils/modules.py", line 440, in forward
+    y, attn = self.attn(
+              ^^^^^^^^^^
+  File "/root/miniconda3/envs/Info-JEPA-Train/lib/python3.12/site-packages/torch/nn/modules/module.py", line 1779, in _wrapped_call_impl
+    return self._call_impl(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/root/miniconda3/envs/Info-JEPA-Train/lib/python3.12/site-packages/torch/nn/modules/module.py", line 1790, in _call_impl
+    return forward_call(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/root/autodl-tmp/Info-JEPA-fork/app/vjepa_2_1/models/utils/modules.py", line 236, in forward
+    qd = rotate_queries_or_keys(
+         ^^^^^^^^^^^^^^^^^^^^^^^
+  File "/root/autodl-tmp/Info-JEPA-fork/app/vjepa_2_1/models/utils/modules.py", line 52, in rotate_queries_or_keys
+    out = torch.cat(parts, dim=-2)
+          ^^^^^^^^^^^^^^^^^^^^^^^^
+KeyboardInterrupt

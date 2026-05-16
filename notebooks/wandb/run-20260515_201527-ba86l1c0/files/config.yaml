@@ -1,0 +1,156 @@
+_wandb:
+    value:
+        cli_version: 0.26.1
+        e:
+            wwl3oy84obmipkkfbcggt3iljlooxqha:
+                args:
+                    - --config
+                    - config.yaml
+                codePath: notebooks/test_eval.py
+                codePathLocal: test_eval.py
+                cpu_count: 72
+                cpu_count_logical: 144
+                cudaVersion: "13.0"
+                disk:
+                    /:
+                        total: "32212254720"
+                        used: "14924574720"
+                email: xinchen.qian.ai@gmail.com
+                executable: /root/miniconda3/envs/Info-JEPA-Train/bin/python
+                git:
+                    commit: bb1b4a4744990f0e5e6682ed17cb57dcc653e616
+                    remote: git@github.com:xinchenqian/Info-JEPA-fork.git
+                gpu: NVIDIA A800-SXM4-80GB
+                gpu_count: 1
+                gpu_nvidia:
+                    - architecture: Ampere
+                      cudaCores: 6912
+                      memoryTotal: "85899345920"
+                      name: NVIDIA A800-SXM4-80GB
+                      uuid: GPU-fec1b1d5-80c1-55e7-8885-0550650db5f0
+                host: autodl-container-0mr2y4q0at-727384cd
+                memory:
+                    total: "1081806917632"
+                os: Linux-5.15.0-78-generic-x86_64-with-glibc2.35
+                program: /root/autodl-tmp/Info-JEPA-fork/notebooks/test_eval.py
+                python: CPython 3.12.13
+                root: /root/autodl-tmp/Info-JEPA-fork/notebooks
+                startedAt: "2026-05-15T12:15:27.776834Z"
+                writerId: wwl3oy84obmipkkfbcggt3iljlooxqha
+        m:
+            - "1": val/best_acc
+              "5": 2
+              "6":
+                - 1
+                - 3
+              "7": []
+            - "1": epoch
+              "6":
+                - 3
+              "7": []
+            - "1": train/step_loss
+              "5": 4
+              "6":
+                - 1
+                - 3
+              "7": []
+            - "1": train/global_step
+              "6":
+                - 3
+              "7": []
+            - "1": val/loss
+              "5": 2
+              "6":
+                - 1
+                - 3
+              "7": []
+            - "1": val/acc
+              "5": 2
+              "6":
+                - 1
+                - 3
+              "7": []
+            - "1": train/lr
+              "5": 4
+              "6":
+                - 1
+                - 3
+              "7": []
+            - "1": train/epoch_loss
+              "5": 2
+              "6":
+                - 1
+                - 3
+              "7": []
+            - "1": train/epoch_acc
+              "5": 2
+              "6":
+                - 1
+                - 3
+              "7": []
+        python_version: 3.12.13
+        t:
+            "1":
+                - 1
+                - 41
+                - 49
+                - 63
+            "2":
+                - 1
+                - 41
+                - 49
+                - 63
+            "3":
+                - 7
+                - 13
+                - 16
+            "4": 3.12.13
+            "5": 0.26.1
+            "12": 0.26.1
+            "13": linux-x86_64
+amp:
+    value: true
+batch_size:
+    value: 100
+checkpoint:
+    value: null
+config:
+    value: config.yaml
+data_dir:
+    value: ~/autodl-tmp/data
+epochs:
+    value: 20
+frame_step:
+    value: 4
+frames_per_clip:
+    value: 16
+hidden_dim:
+    value: 512
+lr:
+    value: 0.001
+num_classes:
+    value: 101
+num_workers:
+    value: 4
+output_dir:
+    value: ~/autodl-tmp/outputs/vjepa2_ucf101_mlp_probe
+resolution:
+    value: 384
+seed:
+    value: 0
+split_id:
+    value: 1
+val_ratio:
+    value: 0.2
+vjepa_version:
+    value: "2.1"
+wandb_mode:
+    value: online
+wandb_project:
+    value: vjepa2-ucf101-mlp-probe
+wandb_run_name:
+    value: bs150_exp01
+weight_decay:
+    value: 0.0001
+weight_dir:
+    value: ~/autodl-tmp/weight

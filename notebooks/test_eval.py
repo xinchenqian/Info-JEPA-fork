@@ -1,11 +1,11 @@
 import argparse
 import csv
 import math
-import os
 import random
 import sys
+import time
 from pathlib import Path
-
+import yaml
 import numpy as np
 import torch
 import torch.nn as nn
@@ -26,6 +26,11 @@ DEFAULT_DATA_DIR = "~/autodl-tmp/data"
 DEFAULT_WEIGHT_DIR = "~/autodl-tmp/weight"
 
 
+def synchronize_if_cuda(device):
+    if device.type == "cuda":
+        torch.cuda.synchronize(device)
+
+
 def parse_args():
     parser = argparse.ArgumentParser(
         description="Frozen ViT-L + average pooling + two-layer MLP linear probe on a small UCF101 subset."
@@ -43,8 +48,8 @@ def parse_args():
     parser.add_argument("--epochs", type=int, default=20)
     parser.add_argument("--lr", type=float, default=1e-3)
     parser.add_argument("--weight-decay", type=float, default=1e-4)
-    parser.add_argument("--hidden-dim", type=int, default=512)
     parser.add_argument("--num-workers", type=int, default=4)
+    parser.add_argument("--prefetch-factor", type=int, default=2)
     parser.add_argument("--val-ratio", type=float, default=0.2)
     parser.add_argument("--seed", type=int, default=0)
     parser.add_argument("--output-dir", default="~/autodl-tmp/outputs/vjepa2_ucf101_mlp_probe")
@@ -52,7 +57,22 @@ def parse_args():
     parser.add_argument("--wandb-project", default="vjepa2-ucf101-mlp-probe")
     parser.add_argument("--wandb-run-name", default=None)
     parser.add_argument("--wandb-mode", choices=("online", "offline", "disabled"), default="online")
-    return parser.parse_args()
+    parser.add_argument("--config", default=None, help="Path to YAML config file.")
+
+    args = parser.parse_args()
+
+    if args.config is not None:
+        config_path = Path(args.config).expanduser()
+        with open(config_path, "r", encoding="utf-8") as f:
+            config = yaml.safe_load(f)
+
+        if config is not None:
+            for key, value in config.items():
+                if not hasattr(args, key):
+                    raise ValueError(f"Unknown config key in YAML: {key}")
+                setattr(args, key, value)
+
+    return args
 
 
 def seed_everything(seed):
@@ -100,8 +120,8 @@ def read_ucf101_split(split_path, video_root, class_to_idx):
 
 def collect_ucf101_official_split(root, split_id):
     root = Path(root).expanduser()
-    split_dir = root / "splits"
-    video_root = root / "ucf101-ft"
+    split_dir = root / "ucfTrainTestlist"
+    video_root = root / "UCF-101"
     class_file = split_dir / "classInd.txt"
     train_file = split_dir / f"trainlist{split_id:02d}.txt"
     test_file = split_dir / f"testlist{split_id:02d}.txt"
@@ -174,15 +194,9 @@ class UCFVideoDataset(Dataset):
 
 
 class AveragePoolMLPProbe(nn.Module):
-    def __init__(self, embed_dim, hidden_dim, num_classes):
+    def __init__(self, embed_dim, num_classes):
         super().__init__()
-        self.head = nn.Sequential(
-            nn.LayerNorm(embed_dim),
-            nn.Linear(embed_dim, hidden_dim),
-            nn.GELU(),
-            nn.Dropout(0.1),
-            nn.Linear(hidden_dim, num_classes),
-        )
+        self.head = nn.Linear(embed_dim, num_classes)
 
     def forward(self, tokens):
         pooled = tokens.mean(dim=1)
@@ -319,11 +333,15 @@ def run_epoch(backbone, probe, loader, criterion, optimizer, device, training, u
     total_loss = 0.0
     total_correct = 0
     total_count = 0
+    epoch_start_time = time.perf_counter()
 
     amp_enabled = use_amp and device.type == "cuda"
     grad_context = torch.enable_grad() if training else torch.no_grad()
 
     for clips, labels in loader:
+        synchronize_if_cuda(device)
+        step_start_time = time.perf_counter()
+
         clips = clips.to(device, non_blocking=True)
         labels = labels.to(device, non_blocking=True)
 
@@ -331,23 +349,26 @@ def run_epoch(backbone, probe, loader, criterion, optimizer, device, training, u
             optimizer.zero_grad(set_to_none=True)
 
         with torch.no_grad():
-            with torch.cuda.amp.autocast('cuda', enabled=amp_enabled):
+            with torch.cuda.amp.autocast(enabled=amp_enabled and device.type == "cuda"):
                 tokens = backbone(clips)
 
         with grad_context:
-            with torch.cuda.amp.autocast('cuda', enabled=amp_enabled):
+            with torch.cuda.amp.autocast(enabled=amp_enabled and device.type == "cuda"):
                 logits = probe(tokens)
                 loss = criterion(logits, labels)
 
         if training:
             loss.backward()
             optimizer.step()
+            synchronize_if_cuda(device)
+            step_time = time.perf_counter() - step_start_time
             current_lr = optimizer.param_groups[0]["lr"]
             wandb.log(
                 {
                     "train/global_step": global_step,
                     "train/step_loss": loss.item(),
                     "train/lr": current_lr,
+                    "train/step_time_sec": step_time,
                 }
             )
             global_step += 1
@@ -359,9 +380,11 @@ def run_epoch(backbone, probe, loader, criterion, optimizer, device, training, u
 
     avg_loss = total_loss / max(1, total_count)
     avg_acc = 100.0 * total_correct / max(1, total_count)
+    synchronize_if_cuda(device)
+    epoch_time = time.perf_counter() - epoch_start_time
     if training:
-        return avg_loss, avg_acc, global_step
-    return avg_loss, avg_acc
+        return avg_loss, avg_acc, global_step, epoch_time
+    return avg_loss, avg_acc, epoch_time
 
 
 def save_probe_checkpoint(path, probe, optimizer, scheduler, args, class_to_idx, epoch, best_val, val_acc):
@@ -403,6 +426,11 @@ def main():
         args.num_classes = max(labels) + 1
     print(f"Train videos: {len(train_dataset)} | Val videos: {len(val_dataset)}")
 
+    loader_kwargs = {}
+    if args.num_workers > 0:
+        loader_kwargs["prefetch_factor"] = args.prefetch_factor
+        loader_kwargs["persistent_workers"] = True
+
     train_loader = DataLoader(
         train_dataset,
         batch_size=args.batch_size,
@@ -410,6 +438,7 @@ def main():
         num_workers=args.num_workers,
         pin_memory=True,
         drop_last=False,
+        **loader_kwargs,
     )
     val_loader = DataLoader(
         val_dataset,
@@ -418,6 +447,7 @@ def main():
         num_workers=args.num_workers,
         pin_memory=True,
         drop_last=False,
+        **loader_kwargs,
     )
 
     backbone = build_vitl_backbone(args)
@@ -426,7 +456,7 @@ def main():
     for param in backbone.parameters():
         param.requires_grad = False
 
-    probe = AveragePoolMLPProbe(backbone.embed_dim, args.hidden_dim, args.num_classes).to(device)
+    probe = AveragePoolMLPProbe(backbone.embed_dim, args.num_classes).to(device)
     criterion = nn.CrossEntropyLoss()
     optimizer = torch.optim.AdamW(probe.parameters(), lr=args.lr, weight_decay=args.weight_decay)
     scheduler = torch.optim.lr_scheduler.CosineAnnealingLR(optimizer, T_max=max(1, args.epochs))
@@ -440,10 +470,14 @@ def main():
     wandb.define_metric("epoch")
     wandb.define_metric("train/step_loss", step_metric="train/global_step")
     wandb.define_metric("train/lr", step_metric="train/global_step")
+    wandb.define_metric("train/step_time_sec", step_metric="train/global_step")
     wandb.define_metric("train/epoch_loss", step_metric="epoch")
     wandb.define_metric("train/epoch_acc", step_metric="epoch")
+    wandb.define_metric("train/epoch_time_sec", step_metric="epoch")
     wandb.define_metric("val/loss", step_metric="epoch")
     wandb.define_metric("val/acc", step_metric="epoch")
+    wandb.define_metric("val/epoch_time_sec", step_metric="epoch")
+    wandb.define_metric("epoch/time_sec", step_metric="epoch")
     wandb.define_metric("val/best_acc", step_metric="epoch")
 
     best_val = -math.inf
@@ -451,7 +485,8 @@ def main():
     output_dir = Path(args.output_dir).expanduser()
     output_dir.mkdir(parents=True, exist_ok=True)
     for epoch in range(1, args.epochs + 1):
-        train_loss, train_acc, global_step = run_epoch(
+        epoch_start_time = time.perf_counter()
+        train_loss, train_acc, global_step, train_epoch_time = run_epoch(
             backbone,
             probe,
             train_loader,
@@ -462,9 +497,11 @@ def main():
             use_amp=args.amp,
             global_step=global_step,
         )
-        val_loss, val_acc = run_epoch(
+        val_loss, val_acc, val_epoch_time = run_epoch(
             backbone, probe, val_loader, criterion, optimizer, device, training=False, use_amp=args.amp
         )
+        synchronize_if_cuda(device)
+        epoch_time = time.perf_counter() - epoch_start_time
         scheduler.step()
         is_best = val_acc > best_val
         best_val = max(best_val, val_acc)
@@ -478,15 +515,19 @@ def main():
                 "epoch": epoch,
                 "train/epoch_loss": train_loss,
                 "train/epoch_acc": train_acc,
+                "train/epoch_time_sec": train_epoch_time,
                 "val/loss": val_loss,
                 "val/acc": val_acc,
+                "val/epoch_time_sec": val_epoch_time,
+                "epoch/time_sec": epoch_time,
                 "val/best_acc": best_val,
             }
         )
         print(
             f"Epoch {epoch:03d}/{args.epochs} | "
             f"train loss {train_loss:.4f} acc {train_acc:.2f}% | "
-            f"val loss {val_loss:.4f} acc {val_acc:.2f}% | best {best_val:.2f}%"
+            f"val loss {val_loss:.4f} acc {val_acc:.2f}% | best {best_val:.2f}% | "
+            f"time {epoch_time:.2f}s"
         )
     wandb.finish()
 

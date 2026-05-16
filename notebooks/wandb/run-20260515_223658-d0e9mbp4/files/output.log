@@ -1,0 +1,18 @@
+/root/autodl-tmp/Info-JEPA-fork/notebooks/test_eval.py:342: FutureWarning: `torch.cuda.amp.autocast(args...)` is deprecated. Please use `torch.amp.autocast('cuda', args...)` instead.
+  with torch.cuda.amp.autocast(enabled=amp_enabled and device.type == "cuda"):
+/root/miniconda3/envs/Info-JEPA-Train/lib/python3.12/contextlib.py:105: FutureWarning: `torch.backends.cuda.sdp_kernel()` is deprecated. In the future, this context manager will be removed. Please see `torch.nn.attention.sdpa_kernel()` for the new context manager, with updated signature.
+  self.gen = func(*args, **kwds)
+/root/autodl-tmp/Info-JEPA-fork/notebooks/test_eval.py:346: FutureWarning: `torch.cuda.amp.autocast(args...)` is deprecated. Please use `torch.amp.autocast('cuda', args...)` instead.
+  with torch.cuda.amp.autocast(enabled=amp_enabled and device.type == "cuda"):
+Epoch 001/20 | train loss 2.5813 acc 55.09% | val loss 1.3748 acc 75.87% | best 75.87%
+Epoch 002/20 | train loss 0.8589 acc 86.33% | val loss 0.8612 acc 81.23% | best 81.23%
+Traceback (most recent call last):
+  File "/root/autodl-tmp/Info-JEPA-fork/notebooks/test_eval.py", line 510, in <module>
+    main()
+  File "/root/autodl-tmp/Info-JEPA-fork/notebooks/test_eval.py", line 469, in main
+    train_loss, train_acc, global_step = run_epoch(
+                                         ^^^^^^^^^^
+  File "/root/autodl-tmp/Info-JEPA-fork/notebooks/test_eval.py", line 357, in run_epoch
+    "train/step_loss": loss.item(),
+                       ^^^^^^^^^^^
+KeyboardInterrupt

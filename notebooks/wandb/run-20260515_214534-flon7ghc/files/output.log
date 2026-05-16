@@ -1,0 +1,3 @@
+Epoch 001/3 | train loss 4.0780 acc 20.85% | val loss 3.5128 acc 32.33% | best 32.33%
+Epoch 002/3 | train loss 3.1332 acc 42.08% | val loss 3.0322 acc 40.31% | best 40.31%
+Epoch 003/3 | train loss 2.8431 acc 46.82% | val loss 2.9273 acc 41.61% | best 41.61%

@@ -1,0 +1,30 @@
+
+data_dir: "~/autodl-tmp/data"
+weight_dir: "~/autodl-tmp/weight"
+checkpoint: null
+
+vjepa_version: "2.1"
+num_classes: null
+split_id: 1
+
+resolution: 384
+frames_per_clip: 16
+frame_step: 4
+
+batch_size: 256
+epochs: 20
+lr: 0.001
+weight_decay: 0.0001
+
+num_workers: 2
+prefetch_factor: 1
+val_ratio: 0.2
+seed: 0
+
+output_dir: "~/autodl-tmp/outputs/vjepa2_ucf101_mlp_probe"
+
+amp: true
+
+wandb_project: "vjepa2-ucf101-mlp-probe"
+wandb_run_name: "bs256_worker2_prefetch1_epochs20_lr0.001_wd0.0001"
+wandb_mode: "online"

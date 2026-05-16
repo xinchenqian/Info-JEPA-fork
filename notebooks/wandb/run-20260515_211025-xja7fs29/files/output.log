@@ -1,0 +1,6 @@
+/root/autodl-tmp/Info-JEPA-fork/notebooks/test_eval.py:341: FutureWarning: `torch.cuda.amp.autocast(args...)` is deprecated. Please use `torch.amp.autocast('cuda', args...)` instead.
+  with torch.cuda.amp.autocast(enabled=amp_enabled and device.type == "cuda"):
+/root/miniconda3/envs/Info-JEPA-Train/lib/python3.12/contextlib.py:105: FutureWarning: `torch.backends.cuda.sdp_kernel()` is deprecated. In the future, this context manager will be removed. Please see `torch.nn.attention.sdpa_kernel()` for the new context manager, with updated signature.
+  self.gen = func(*args, **kwds)
+/root/autodl-tmp/Info-JEPA-fork/notebooks/test_eval.py:345: FutureWarning: `torch.cuda.amp.autocast(args...)` is deprecated. Please use `torch.amp.autocast('cuda', args...)` instead.
+  with torch.cuda.amp.autocast(enabled=amp_enabled and device.type == "cuda"):
